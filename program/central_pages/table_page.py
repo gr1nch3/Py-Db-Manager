@@ -237,7 +237,7 @@ class TablePage(tk.Frame):
             query_string = query_var.get()
             _db.connect()
             try:
-                result = _db.query(query_string)
+                result = _db.query(query_string, as_transaction=True)
                 _db.disconnect()
                 build_tree(result)
             except Exception as e:

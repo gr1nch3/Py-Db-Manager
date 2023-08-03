@@ -31,6 +31,7 @@ class MenuFrame(tk.Menu):
         self.row_value = kwargs["row_value"] if "row_value" in kwargs else None
         self.row_table = kwargs["row_table"] if "row_table" in kwargs else None
         self.hide_alter = kwargs["hide_alter"] if "hide_alter" in kwargs else False
+        self.controller_count = kwargs["cont_count"] if "cont_count" in kwargs else False
 
         # close menu when clicked outside
         self.bind("<FocusOut>", lambda event: self.destroy())
@@ -48,7 +49,10 @@ class MenuFrame(tk.Menu):
             :return: The menu
         """
         if self.db_name is not None:
-            self.controller.controller.delete_database(self.db_name)
+            if self.controller_count:
+                self.controller.delete_database(self.db_name)
+            else:
+                self.controller.controller.delete_database(self.db_name)
         if self.table_name is not None:
             self.controller.controller.delete_table(self.table_name)
         if self.row_value is not None and self.row_table is not None:

@@ -121,10 +121,22 @@ class InsertFrame(tk.Toplevel):
         values = []
         for i in range(len(column_names)):
             values.append(self.column_inputs[i].get())
+
+        # check the length of the column names and fix the syntax
+        if len(column_names) == 1:
+            column_names = str(column_names).replace(",", "")
         # replace ' in column name tuple
         column_names = str(column_names).replace("'", "")
 
         values = tuple(values)
+        print("v0: ", values)
+        # check the length of the values and fix the syntax
+        if len(values) == 1:
+            values = str(values).replace(",", "")
+            print("v1: ", values)
+
+        print("v len: ", len(values))
+        print(values)
         # insert the row
         self.controller.controller.insert_to_table(self.table_name, column_names, values)
         # close the window

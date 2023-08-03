@@ -7,6 +7,7 @@ from tkinter import ttk
 
 
 # Import the necessary classes
+from .popups.menu_frame import MenuFrame
 
 
 # turn the sidebar into a treeview
@@ -27,6 +28,7 @@ class Sidebar(ttk.Treeview):
         self.plus_button.config(height=1, width=1)
         # trigger on click event to controller open database frame
         self.plus_button.bind("<Button-1>", self.controller.open_database_frame)
+        self.bind("<Button-3>", self.open_menu_frame)
 
         self._build()
 
@@ -161,3 +163,33 @@ class Sidebar(ttk.Treeview):
                 self.event_generate("<<TreeviewSelect>>")
         else:
             pass
+
+    # open menu frame for children under "Database"
+    def open_menu_frame(self, event):
+        """
+            The open_menu_frame function is called when the user right-clicks on a treeview item.
+            It opens a popup menu that allows the user to delete or edit an item.
+
+            :param event: Identify the event that caused the function to be called
+            :return: A menu frame object
+        """
+
+        forbidden_list = ["mysql", "postgresql", "mssql", "databases"]
+
+        # identify the treeview item that was clicked
+        menu_frame = None
+        item = self.identify_row(event.y)
+        # check if item is in forbidden list
+        # if self.item(item, "text") in forbidden_list:
+        #     return
+        # trigger treeview focus
+        tr = str(self.item(item, "text"))
+        if item and str(self.item(item, "text")).lower() not in forbidden_list:
+            # activate the top level window
+            try:
+                menu_frame = MenuFrame(self.controller, db_name=tr, hide_alter=True, cont_count=True)
+                menu_frame.tk_popup(event.x_root, event.y_root)
+                # get focus
+                menu_frame.focus_set()
+            finally:
+                menu_frame.grab_release()

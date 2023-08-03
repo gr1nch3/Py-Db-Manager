@@ -1,0 +1,16 @@
+2023-07-31 03:45:51,318 - ERROR - Query error: (psycopg2.errors.ActiveSqlTransaction) DROP DATABASE cannot run inside a transaction block
+
+[SQL: DROP DATABASE IF EXISTS db_post_beta]
+(Background on this error at: https://sqlalche.me/e/14/2j85)
+2023-07-31 03:47:32,588 - ERROR - Query error: (psycopg2.errors.ActiveSqlTransaction) DROP DATABASE cannot run inside a transaction block
+
+[SQL: DROP DATABASE IF EXISTS db_post_beta]
+(Background on this error at: https://sqlalche.me/e/14/2j85)
+2023-07-31 03:48:45,239 - ERROR - Query error: (psycopg2.errors.ActiveSqlTransaction) DROP DATABASE cannot run inside a transaction block
+
+[SQL: DROP DATABASE IF EXISTS db_post_beta]
+(Background on this error at: https://sqlalche.me/e/14/2j85)
+2023-07-31 03:51:33,204 - ERROR - Query error: (psycopg2.errors.ActiveSqlTransaction) DROP DATABASE cannot run inside a transaction block
+
+[SQL: DROP DATABASE IF EXISTS db_post_beta]
+(Background on this error at: https://sqlalche.me/e/14/2j85)

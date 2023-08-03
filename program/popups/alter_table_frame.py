@@ -352,7 +352,9 @@ class AlterTable(tk.Toplevel):
                 loop_start = 0  # set the range the loop will run for
                 loop_count = 0  # set the number of times the loop will run
 
-                for column_index in self.columns_details.keys():
+                # pylint: disable=C0206
+                # pylint: disable=C0201
+                for column_index in self.columns_details.keys(): # noqa
                     column_details = self.columns_details[column_index]
                     new_columns = columns[column_index]  # despite the name, this is the old columns data from the db
 
@@ -489,14 +491,13 @@ class AlterTable(tk.Toplevel):
                     # if the column_index is equal to the max_existing_column_index
                     # it means that the user has not added or removed a column
                     elif new_column_index == max_existing_column_index:
-                        """
-                            solution: 1. make sure the columns and self.columns_details are the same
-                                        in order, data type and data order
-                                      2. loop through the columns and self.columns_details and compare
-                                        the values, if any changes are found, run the query
 
-                                    Note: the column_detalis is a list of tkinter variables.
-                        """
+                        #    solution: 1. make sure the columns and self.columns_details are the same
+                        #               in order, data type and data order
+                        #             2. loop through the columns and self.columns_details and compare
+                        #               the values, if any changes are found, run the query
+
+                        #          Note: the column_detalis is a list of tkinter variables
 
                         # only add column if column name is not empty
                         column = column_details[0].get()
@@ -744,7 +745,9 @@ class AlterTable(tk.Toplevel):
                 unique_string = ""
                 # adding column to the table
                 if len(for_query) > 0:
-                    for i in range(len(for_query)):
+                    print("for q: \n", for_query)
+                    # pylint: disable=C0200
+                    for i in range(len(for_query)): # this iworks better than enumerate
                         if self.cdb.db_type == "mysql":
                             query = f"{for_query[i]['column_name']} {for_query[i]['data_type']}"
                             if for_query[i]['length'] != "":
@@ -841,7 +844,7 @@ class AlterTable(tk.Toplevel):
                     qt_query = ""
                     # strip the query_tuple from the last comma
                     if len(query_tuple) == 1:
-                        qt_query = query_tuple[0]
+                        qt_query = f"ADD {query_tuple[0]}"
                     else:
                         for q in query_tuple:
 
@@ -867,7 +870,7 @@ class AlterTable(tk.Toplevel):
         # is placed in the button frame on the right side
         add_column_button = ttk.Button(button_frame, text="Add Column", width=10, command=add_column)
         add_column_button.pack(side=tk.RIGHT, padx=5, pady=5)
-        add_column_button.bind("<Button-1>", lambda: add_column())
+        # add_column_button.bind("<Button-1>", lambda: add_column())
 
         if self.columns_length > 0:
             build()

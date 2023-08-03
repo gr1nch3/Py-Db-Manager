@@ -67,12 +67,14 @@ class Database(object):
             try:
                 conn_string = \
                     f"mssql+pyodbc://{self.db_user}:{self.db_pass}@{self.db_host}:{self.db_port}/" \
-                    f"{self.db_name}?driver=ODBC+Driver+17+for+SQL+Server"
+                    f"{self.db_name}?driver=ODBC+Driver+18+for+SQL+Server" \
+                    f"&TrustServerCertificate=yes"
+
                 self._db = create_engine(conn_string)
                 self._connection_string()
-            except SQLAlchemyError as e:
-                logging.error(f"Error connecting to database: {e}")
-                raise RuntimeError(f"Connection error: {str(e)}")
+            except SQLAlchemyError as _e:
+                logging.error(f"Error connecting to database: {_e}")
+                raise RuntimeError(f"Connection error: {str(_e)}")
         # ----------------------------------- mysql ---------------------------------- #
         elif self.db_type == "mysql":
             try:
@@ -114,45 +116,60 @@ class Database(object):
         # ----------------------------------- mssql ---------------------------------- #
         if self.db_type == "mssql":
             self.connection = pyodbc.connect(
-                "DRIVER={ODBC Driver 17 for SQL Server};"
+                "DRIVER={ODBC Driver 18 for SQL Server};"
                 f'SERVER={self.db_host};'
-                f'PORT={self.db_port};'
-                f'DATABASE={self.db_name};'
+                # f'PORT={self.db_port};'
+                'DATABASE=master;'
                 f'UID={self.db_user};'
                 f'PWD={self.db_pass};'
-                f'PWD={self.db_pass};'
+                'TrustServerCertificate=yes;'
             )
             self._cursor = self.connection.cursor()
             try:
-                self._cursor.execute("CREATE DATABASE " + self.db_name)
+                self._cursor.execute(f"CREATE DATABASE {self.db_name}")
+
+                self._cursor.close()
+                self.connection.commit()
+                self.connection.close()
+
             except Exception as _e:
-                logging.error(f"Database creation failed: {_e}")
-                raise RuntimeError(f"Connection error: {str(_e)}")
-            self.connection.close()
-        # ----------------------------------- mysql ---------------------------------- #
-        elif self.db_type == "mysql":
-            self.connection = pymysql.connect(
-                host=self.db_host, user=self.db_user, passwd=self.db_pass
-            )
-            self._cursor = self.connection.cursor()
-            try:
-                self._cursor.execute("CREATE DATABASE " + self.db_name)
-            except Exception as _e:
+                self.connection.rollback()
                 logging.error(f"Database creation failed: {_e}")
                 raise RuntimeError(f"Connection error: {str(_e)}")
 
-            self.connection.close()
-        # -------------------------------- postgresql -------------------------------- #
-        elif self.db_type == "postgresql":
-            self.connection = psycopg2.connect(
+        # ----------------------------------- mysql ---------------------------------- #
+        elif self.db_type == "mysql":
+            self.connection = pymysql.connect(
                 host=self.db_host, user=self.db_user, password=self.db_pass
             )
             self._cursor = self.connection.cursor()
             try:
-                self._cursor.execute("CREATE DATABASE " + self.db_name)
+                self._cursor.execute(f"CREATE DATABASE {self.db_name}")
             except Exception as _e:
                 logging.error(f"Database creation failed: {_e}")
                 raise RuntimeError(f"Connection error: {str(_e)}")
+
+            self._cursor.close()
+
+            self.connection.close()
+        # -------------------------------- postgresql -------------------------------- #
+        elif self.db_type == "postgresql":
+            print(f"db details: {self.db_host}, {self.db_user}, {self.db_pass}")
+            self.connection = psycopg2.connect(
+                host=self.db_host, user=self.db_user, password=self.db_pass, port=self.db_port, database="postgres"
+            )
+            print(f"db name form create db 1: {self.db_name}")
+            self.connection.autocommit = True
+            self._cursor = self.connection.cursor()
+            print(f"db name form create db 2: {self.db_name}")
+            try:
+                print(f"db name form create db: {self.db_name}")
+                self._cursor.execute(f"CREATE DATABASE {self.db_name}")
+            except Exception as _e:
+                logging.error(f"Database creation failed: {_e}")
+                raise RuntimeError(f"Connection error: {str(_e)}")
+
+            self._cursor.close();
 
             self.connection.close()
         else:
@@ -174,7 +191,7 @@ class Database(object):
             logging.error(f"Error disconnecting from database: {e}")
             raise RuntimeError(f"Connection error: {str(e)}")
 
-    def query(self, sql: str):
+    def query(self, sql: str, as_transaction: bool = False):
         """
             The query function takes in a SQL query as a parameter, then uses that query to select data from
             the database.
@@ -182,16 +199,25 @@ class Database(object):
 
             :param self: Represent the instance of the class
             :param sql: str: Pass in the sql query that we want to execute
+            :param as_transaction: bool: Pass in a boolean value to determine if the query should be executed as a
+                                                transaction or not
             :return: The result of the query as a result-proxy object
         """
         try:
-            with self._db.connect() as connection:
-                result = connection.execute(sql)
-            return result
-        except Exception as e:
-            logging.error(f"Query error: {str(e)}")
+            # commit the transaction if as_transaction is True
+            if as_transaction is True:
+                print("transaction")
+                with self._db.connect() as connection:
+                    result = connection.execute(sql)
+                    self._db.commit()
+                return result
+            else:
+                print("not transaction")
+                return self._db.execute(sql)
+        except Exception as _e:
+            logging.error(f"Query error: {str(_e)}")
             # connection.rollback()
-            raise RuntimeError(f"Connection error: {str(e)}")
+            raise RuntimeError(f"Connection error: {str(_e)}")
 
     # transaction
     def transaction(self, sql: list):
@@ -294,9 +320,12 @@ class Database(object):
                 logging.error(f"Get db metadata error: {str(e)}")
                 raise RuntimeError(f"Connection error: {str(e)}")
         elif self.db_type == "postgresql":
+            sc = _inspector.get_schema_names()
+            print("ps name",_inspector.default_schema_name)
+            print("ps sc", sc)
             try:
                 response[self.db_type] = {
-                    "name": _inspector.default_schema_name,
+                    "name": _inspector.default_schema_name if _inspector.default_schema_name != "public" else self._db.url.database,
                     "tables_length": len(_inspector.get_table_names()),
                 }
             except Exception as e:
@@ -390,6 +419,7 @@ class Database(object):
         if self.db_type == "postgresql":
             try:
                 for table_name in _table_names:
+                    print("t names: ", table_name)
                     # get the engine and autoincrement values
                     table_engine = _inspector.get_table_options(table_name)['postgresql_table_options']['engine']
                     # auto_increment = _inspector.get_columns(table_name)[0]['autoincrement']

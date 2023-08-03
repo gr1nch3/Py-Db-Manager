@@ -117,6 +117,10 @@ class DbCreator(tk.Toplevel):
         # connection strings combobox values
         cbvalues = get_connection_strings()
 
+        # checking if cbvalues is empty
+        # if len(cbvalues) == 0:
+        #     cbvalues = ['mysql://root:9r06r4m3rM#@localhost:3306/Supermarket']
+
         # Combobox for the connection string
         dbs_conn_string_label = tk.Label(self, text="Connection String")
         dbs_conn_string_label.place(relx=0.25, rely=0.05, anchor="center")

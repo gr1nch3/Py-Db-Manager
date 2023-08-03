@@ -4,11 +4,13 @@
 # Import the necessary modules
 import tkinter as tk
 
+from program.popups.add_database_frame import DbCreator
+
 # Import the necessary classes
 from .central_pages.detail_page import DetailPage
 from .central_pages.dbs_page import DbsPage
 from .central_pages.table_page import TablePage
-from .popups.add_database_frame import DbCreator
+# from .popups.add_database_frame import DbCreator
 from .popups.alter_table_frame import AlterTable
 # from .popups.alter_database_frame import AlterDatabase
 from .popups.add_table_frame import AddTable
@@ -41,7 +43,7 @@ class CentralView(tk.Frame):
         self._frame = tk.Frame(self)
         # create a label
         label = tk.Label(self._frame,
-                         text="Welcome to the Database Management System",
+                         text="Welcome to Py-Db Management System",
                          # bg="#ffffff",
                          font=("Arial", 30))
         # pack the label
@@ -106,7 +108,7 @@ class CentralView(tk.Frame):
         # pack the frame
         self._frame.pack(fill="both", expand=True)
 
-    # function to add the add database view to the main view
+    # # function to add the add database view to the main view
     def add_database_frame(self, event):
         """
             The add_database_frame function is called when the user clicks on the &quot;Add Database&quot; button.
@@ -191,18 +193,18 @@ class CentralView(tk.Frame):
         self.edit_view.deiconify()
         self.edit_view.focus_set()
 
-    def view(self):
-        """
-            The _view function is the default view for the central frame.
-            it is a blank frame with a text in the center.
+    # def view(self):
+    #     """
+    #         The _view function is the default view for the central frame.
+    #         it is a blank frame with a text in the center.
 
-            :param self: Represent the instance of the class
-        """
-        # create a frame
-        frame = tk.Frame(self, bg="#ffffff")
-        # create a label
-        label = tk.Label(frame, text="Welcome to the Database Management System", bg="#ffffff")
-        # pack the label
-        label.pack(pady=100, padx=100)
-        # pack the frame
-        frame.pack(fill="both", expand=True)
+    #         :param self: Represent the instance of the class
+    #     """
+    #     # create a frame
+    #     frame = tk.Frame(self, bg="#ffffff")
+    #     # create a label
+    #     label = tk.Label(frame, text="Welcome to the Database Management System", bg="#ffffff")
+    #     # pack the label
+    #     label.pack(pady=100, padx=100)
+    #     # pack the frame
+    #     frame.pack(fill="both", expand=True)

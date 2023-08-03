@@ -124,7 +124,7 @@ class BaseView(tk.Tk):
         except Exception as e:
             ErrorHandler(self, str(e))
 
-    # function to add a database
+    # # function to add a database
     def add_database(self, conn_string, db_name):
         """
             The add_database function is used to add a database.
@@ -136,14 +136,30 @@ class BaseView(tk.Tk):
         # get the values from the connection string mysql://root:9r06r4m3rM#@localhost:3306/
         conn_string = str(conn_string)
 
-        database_type = conn_string.split("://")[0]
-        database_user = conn_string.split("://")[1].split(":")[0]
-        database_pass = conn_string.split("://")[1].split(":")[1].split("@")[0]
-        database_host = conn_string.split("://")[1].split(":")[1].split("@")[1]
-        database_port = int(str(conn_string.split("://")[1].split(":")[2]))
-        # database_type = database_type.lower()
-        # convert port to int
-        # database_port = int(port)
+        database_type = ""
+        database_user = ""
+        database_pass = ""
+        database_host = ""
+        database_port = 0
+
+        # check the amount of colons in the string
+        if conn_string.count(":") == 3:
+            database_type = conn_string.split("://")[0]
+            database_user = conn_string.split("://")[1].split(":")[0]
+            database_pass = conn_string.split("://")[1].split(":")[1].split("@")[0]
+            database_host = conn_string.split("://")[1].split(":")[1].split("@")[1]
+            database_port = int(str(conn_string.split("://")[1].split(":")[2]))
+        elif conn_string.count(":") == 2:
+            print("no password")
+            # there's no password, so the string will only have 2 colons
+            # get the values from the connection string mysql://root@localhost:3306/
+            database_type = conn_string.split("://")[0]
+            database_user = conn_string.split("://")[1].split("@")[0]
+            database_pass = ""
+            database_host = conn_string.split("://")[1].split("@")[1].split(":")[0]
+            database_port = int(str(conn_string.split("://")[1].split(":")[1]))
+
+
 
         # create a database object
         try:
@@ -182,6 +198,7 @@ class BaseView(tk.Tk):
             db.connect()
             data = db.get_db_metadata()
             db.disconnect()
+            print("data", data)
             return data
         except Exception as e:
             ErrorHandler(self, str(e))
@@ -273,7 +290,7 @@ class BaseView(tk.Tk):
         try:
             db.connect()
             # remove the database from the list of databases
-            db.query(f"DROP DATABASE {database_name}")
+            db.query(f"DROP DATABASE IF EXISTS {database_name}", as_transaction=True)
             db.remove_connection_string()
             db.disconnect()
             self.refresh()

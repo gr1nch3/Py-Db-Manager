@@ -1,0 +1,31 @@
+version: '3'
+services:
+  postgresql:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: gr1nch3
+      POSTGRES_PASSWORD: lloydkush3
+      POSTGRES_DB: db_prime
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: lloydkush3
+      MYSQL_DATABASE: db_prime
+      MYSQL_USER: gr1nch3
+      MYSQL_PASSWORD: lloydkush33
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:latest
+    restart: always
+    ports:
+      - 1433:1433
+    environment:
+      SA_PASSWORD: lloydkush3
+      ACCEPT_EULA: Y

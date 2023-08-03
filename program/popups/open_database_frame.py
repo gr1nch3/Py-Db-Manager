@@ -53,7 +53,7 @@ class Opener(tk.Toplevel):
         database_password_label.place(relx=0.25, rely=0.4, anchor="center")
         database_password_entry = tk.Entry(self)
         database_password_entry.place(relx=0.25, rely=0.5, anchor="center")
-        database_password_entry.config(show="*")
+        # database_password_entry.config(show="*")
 
         database_host_label = tk.Label(self, text="Database Host")
         database_host_label.place(relx=0.75, rely=0.4, anchor="center")

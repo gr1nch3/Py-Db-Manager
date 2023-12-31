@@ -1,4 +1,4 @@
-#!/home/gr1nch3/Documents/Ipmc/Year1/project_work/Py-Db-Manager/venv/bin/python3
+#!/home/gr1nch3/Documents/Python/Py-Db-Manager/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

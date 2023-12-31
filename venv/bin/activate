@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/gr1nch3/Documents/Ipmc/Year1/project_work/Py-Db-Manager/venv"
+VIRTUAL_ENV="/home/gr1nch3/Documents/Python/Py-Db-Manager/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

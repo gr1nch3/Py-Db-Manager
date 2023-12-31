@@ -1,9 +1,18 @@
-wheel==0.40.0
-SQLAlchemy==1.4.25
+asn1crypto==1.5.1
+cffi==1.16.0
+cryptography==41.0.2
+greenlet==3.0.1
 mysql-connector-python==8.0.27
-psycopg2-binary==2.9.6
-psycopg==3.1.9
-pyodbc==4.0.35
-pymysql==1.0.3
-cryptography==41.0.2 # needed for db authentication
 pg8000==1.30.3
+protobuf==4.25.1
+psycopg==3.1.9
+psycopg2-binary==2.9.6
+pycparser==2.21
+Pygments==2.17.2
+PyMySQL==1.0.3
+pyodbc==5.0.1
+python-dateutil==2.8.2
+scramp==1.4.4
+six==1.16.0
+SQLAlchemy==1.4.25
+typing_extensions==4.8.0

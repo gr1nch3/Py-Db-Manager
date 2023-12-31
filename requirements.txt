@@ -6,3 +6,4 @@ psycopg==3.1.9
 pyodbc==4.0.35
 pymysql==1.0.3
 cryptography==41.0.2 # needed for db authentication
+pg8000==1.30.3

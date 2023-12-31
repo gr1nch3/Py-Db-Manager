@@ -1,14 +1,6 @@
-"""_summary_: A tkinter GUI for multiple database types
-"""
-
-
-# Import the necessary classes
-from program.base import BaseView
-
+from app.manager import AppManager
 
 if __name__ == "__main__":
-    root = BaseView()
-    """Entrypoint
-    """    # program name
+    root = AppManager()
     root.title("Py-Db")
     root.mainloop()
